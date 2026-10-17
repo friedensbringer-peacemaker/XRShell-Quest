@@ -1,0 +1,20 @@
+# Syndicate Wars (Bullfrog 1996, DOS/GOG-CD) — als xrshell.keys in den Spielordner.
+# Handbuch „Main Display“: Del/Bild ab drehen, Einfg/Bild auf kippen, Ende/Pos1 zoomen.
+# Maus: Trigger = gehen/aufheben/auswählen (doppelt = rennen), B = feuern (halten = aufladen),
+# rechter Stick = Pfeiltasten, rechter Griff halten + Hand bewegen = Ansicht ziehen (Pfeiltasten).
+# X (Bildzoom) und Y (Bildschirmtastatur) bleiben frei.
+
+left_stick_left   = DELETE     # Ansicht gegen den Uhrzeigersinn drehen
+left_stick_right  = PAGEDOWN   # Ansicht im Uhrzeigersinn drehen
+left_stick_up     = HOME       # zoomen (Richtung im Headset prüfen)
+left_stick_down   = END        # zoomen (Gegenrichtung)
+a = PAGEUP                     # Blickwinkel kippen
+left_trigger = INSERT          # Blickwinkel zurückkippen
+right_stick_click = ESC        # Missionsmenü
+
+# VR-Menü → DOS → „Hohe Auflösung umschalten“ sendet diese Taste (keine Controller-Taste):
+# F8 schaltet im Einsatz 320×200 ↔ 640×480 (MAIN.EXE: F8-Abfrage ruft die Moduswahl mit
+# 640×480×8 bzw. 320×200×8 und setzt den Hi-Res-Merker; im Headset prüfen).
+# Kein Standard per Start: CONFIG.INI kennt keinen Auflösungsschlüssel; der Startschalter /H
+# setzt nur den aktuellen Bildmodus, beim Einsatzbeginn entscheidet der Hi-Res-Merker.
+hires = F8

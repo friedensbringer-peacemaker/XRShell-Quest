@@ -1,0 +1,6 @@
+# Theme Park (1994, DOS/GOG) — als xrshell.opt in den Spielordner legen.
+# Soundblaster 16 wie in GOGs DOSBox-Konfiguration (A220 I7 D1 H5); dazu im Spielordner
+# THEME.CD/SNDSETUP.INF: SOUNDFX = SB16 220 7 1 und MUSIC = SB16FM 388 (FM-Musik über OPL3,
+# braucht keine General-MIDI-Soundfont).
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5

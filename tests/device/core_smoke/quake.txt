@@ -1,0 +1,16 @@
+# TyrQuake (xr.shooter), Belegung padmap kQuake: A = Bestätigen, Y = Menü (Start), TR = Feuer,
+# linker Stick laufen + Steuerkreuz ab 0,9 (Menüs), rechter Stick umsehen.
+titel          0    5
+menue          0.15 1     Y
+einzelspieler  0.15 1     A
+neues-spiel    0.15 6     A
+vorwaerts      2    0.3   ly=1
+drehen         1    0.3   rx=1
+feuern         1.5  1     TR
+@savestate
+springen       0.15 0.5   GR
+menue-quit     0.15 0.8   Y
+quit-hoch      0.15 0.8   ly=1
+quit-waehlen   0.15 1     A
+quit-ja-A      0.15 2     A
+nachlauf       0    1

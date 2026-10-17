@@ -1,0 +1,5 @@
+# Dungeon Keeper 1 (DOS, GOG „Gold“) — als xrshell.opt in den Spielordner legen.
+# GOGs DOSBox-Konfiguration nutzt 30 MB; DOSBox-Pure-Standard sind 16 MB.
+dosbox_pure_memory_size = 32
+# Sound: SB16 220h ist DOSBox-Pure-Standard und passt zu SOUND/DIG.INI (IRQ/DMA über BLASTER).
+# CD-Audio: GAME.INS (+ game.gog, keeper0x.ogg) hängt DOSBox Pure automatisch als D: ein.

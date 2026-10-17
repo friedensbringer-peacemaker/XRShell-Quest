@@ -1,0 +1,17 @@
+# Doom / Doom II / Final Doom (DOS 1.9) - Rueckfall fuer den Maus-Modus (ohne xrshell_input = pad).
+# Als xrshell.keys in den Spielordner legen (tools/prepare-dos-games.ps1 macht das).
+# Im Pad-Modus gilt C:\DOS.YML (profiles/doom.yml); XRShell soll xrshell.keys dort nicht
+# zusaetzlich auswerten (sonst kommen Tasten doppelt, Tab/Karte schaltet zweimal).
+#
+# Grundbelegung im Maus-Modus: rechter Stick = Pfeiltasten (vor/zurueck/drehen), Trigger/B =
+# Maustasten - die Maus ist in DEFAULT.CFG aus, daher liegt Feuern hier auf dem linken Trigger.
+# Y bleibt Bildschirmtastatur (fuer "Y" in Abfragen), X wird zur Karte.
+
+left_stick_up     = UP        # vorwaerts
+left_stick_down   = DOWN      # rueckwaerts
+left_stick_left   = COMMA     # seitwaerts links
+left_stick_right  = PERIOD    # seitwaerts rechts
+left_trigger = LCTRL          # feuern
+a = SPACE+ENTER               # benutzen / oeffnen, im Menue bestaetigen
+x = TAB                       # Karte (ersetzt hier den Bildzoom auf X)
+right_stick_click = ESC       # Menue

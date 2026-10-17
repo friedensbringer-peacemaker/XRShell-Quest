@@ -1,0 +1,14 @@
+# DOSBox-Pure, xrshell_input = pad (padmap kDosPad, DOS.YML profiles/doom.yml):
+# A = pad y (Leer+Enter, Menü OK), Y = Start (Esc), TR = pad r (Strg, Feuer), TL = pad l ("y").
+start          0    15
+menue          0.15 1.5   Y
+neues-spiel    0.15 1.5   A
+bestaetigen-2  0.15 4     A
+vorwaerts      2    0.3   ly=1
+drehen         1    0.3   rx=1
+feuern         1.5  1     TR
+@savestate
+menue-quit     0.15 1     Y
+quit-hoch      0.15 1     ly=1
+quit-waehlen   0.15 1     A
+quit-ja        0.15 3     TL

@@ -1,0 +1,17 @@
+# Populous + The Promised Lands (Bullfrog 1989, DOS/GOG) — als xrshell.keys in den Spielordner.
+# Populous wird vollständig mit der Maus über Symbole gespielt (Handbuch „Command Icons“):
+#   Trigger (linke Maustaste) = Land heben / Symbol wählen,
+#   B (rechte Maustaste) = Land senken; rechter Griff = Karte ziehen.
+# Das Handbuch nennt keine Tastenkürzel, daher keine Controller-Belegung. Y öffnet die
+# Bildschirmtastatur (Name der neuen Welt), X bleibt der Bildzoom.
+#
+# Karte ziehen (rechter Griff, xrshell_grip_right = drag in xrshell.opt): Scroll-Tasten.
+# Handbuch S. 12 „Direction Icons“: jeder Richtungspfeil schiebt die Nahkarte um einen Punkt;
+# „You can use your numeric keypad in place of the direction icons, but the keypad is slower.“
+# Daher Ziffernblock 4/6/8/2 (Pfeiltasten nennt das Handbuch nicht). Die Karte ist isometrisch:
+# welche Bildrichtung KP8 ist, im Headset prüfen (sonst Menü → Steuerung → Zieh-Richtung).
+# Weitere Kürzel nur im Malmodus (Handbuch S. 9: F1–F8, Entf, 1–4) – über die Bildschirmtastatur.
+scroll_left  = KP4
+scroll_right = KP6
+scroll_up    = KP8
+scroll_down  = KP2

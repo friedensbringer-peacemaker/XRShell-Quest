@@ -1,0 +1,20 @@
+# Zeilenenden plattformunabhängig festlegen (Entwicklung auf macOS und Windows).
+# Im Repo liegt Text immer als LF; Checkout richtet sich nach diesen Regeln,
+# nicht nach der lokalen core.autocrlf-Einstellung.
+* text=auto eol=lf
+
+# Shell-Skripte müssen LF behalten — sonst "bad interpreter" auf macOS/Linux/WSL
+gradlew     text eol=lf
+*.sh        text eol=lf
+
+# Windows-Batch braucht CRLF
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+
+# Binärdateien nie konvertieren
+*.jar       binary
+*.so        binary
+*.zip       binary
+*.png       binary
+*.jpg       binary
+*.apk       binary

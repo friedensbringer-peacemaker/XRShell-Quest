@@ -1,0 +1,19 @@
+# XRShell-Tastenprofil: Dungeon Keeper 1 (DOS-Version, z. B. GOG „Gold“)
+# Als xrshell.keys in den Spielordner legen (XR-KeeperFX/quest/prepare-dk1.sh macht das).
+# Steuerung laut Handbuch Abschnitt 3.1/11.0; Grundbelegung (Zeiger, Trigger =
+# Linksklick, Griff/B = Rechtsklick, rechter Stick = Pfeiltasten) gilt weiter.
+# Wie bei Theme Park: A = hohe Auflösung, Y bleibt frei (Bildschirmtastatur).
+
+left_stick_left   = DELETE     # Ansicht nach links drehen
+left_stick_right  = PAGEDOWN   # Ansicht nach rechts drehen
+left_stick_up     = HOME       # heranzoomen
+left_stick_down   = END        # herauszoomen
+
+a = LALT+R                     # hohe Auflösung (640×480) an/aus
+x = LSHIFT                     # halten: Shift+Klick = Besessenheit/Info, Shift+Stick = schnell scrollen
+                               # (ersetzt hier den Bildzoom auf X)
+left_trigger = H               # zum Dungeon-Herz springen
+right_stick_click = ESC        # Optionen
+
+# VR-Menü → DOS → „Hohe Auflösung umschalten“ (gleiche Kombination wie A):
+hires = LALT+R

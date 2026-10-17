@@ -1,0 +1,17 @@
+# Worms United (DOS, Steam) — als xrshell.opt in den Spielordner legen.
+# Steam: DOSBox 0.74, cycles=auto, SB16 220h/7/1/5; Handbuch: DX4-100. DOSBox-Pure: max.
+dosbox_pure_cycles = max
+# Worms erkennt die Soundkarte über die BLASTER-Variable (DOCS\BLASTER.TXT) – wie Steam.
+# Musik = CD-Audio (WORMS.CUE: Datenspur WORMS.BIN + CDAUDIO\TRACK02–18.OGG, als D: eingehängt).
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5
+# Maus „virtual“ (relativ): Worms liest nur Mickeys (INT 33 Fkt. 0Bh). Mit „direct“ setzt
+# DOSBox-Pure zwar die Position, der Spielpfeil bleibt aber oben links stehen (Headset-Test
+# 2026-10-03, Laser-Log + Screenshots). Faktor pro Achse per VR-Menü → DOS → „Abgleichen“,
+# Rest mit Reiter Zeiger → „Zeiger waagerecht/senkrecht“.
+dosbox_pure_mouse_input = virtual
+# Bild: HD-Filter (xBR-Kantenglättung) für die Pixelgrafik, im VR-Menü pro Spiel änderbar.
+xrshell_filter = hd
+# Diagnose für den Zeiger-Abgleich: Laserposition im Spielbild alle ~0,2 s ins Log (Screenshots
+# über die Uhrzeit zuordnen). Nach dem Abgleich wieder entfernen.
+xrshell_log_pointer = 1

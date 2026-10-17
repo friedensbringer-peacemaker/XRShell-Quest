@@ -1,0 +1,14 @@
+# Hexen (DOS, 1.1) - Rueckfall fuer den Maus-Modus (ohne xrshell_input = pad), als xrshell.keys
+# in den Spielordner legen. Im Pad-Modus gilt DOS.YML (profiles/hexen.yml).
+# Maus-Modus: rechter Stick = Pfeiltasten (vor/zurueck/drehen), Trigger/B = Maustasten.
+# Y bleibt Bildschirmtastatur (fuer "Y" in Abfragen und seltene Tasten).
+
+left_stick_up     = UP        # vorwaerts
+left_stick_down   = DOWN      # rueckwaerts
+left_stick_left   = COMMA     # seitwaerts links
+left_stick_right  = PERIOD    # seitwaerts rechts
+left_trigger = LCTRL          # feuern
+a = SPACE                     # benutzen / oeffnen
+x = ENTER                     # Artefakt benutzen / Menue OK (ersetzt den Bildzoom)
+right_stick_click = ESC       # Menue
+# Springen (/) gibt es im Maus-Modus nur ueber die Bildschirmtastatur (Y).

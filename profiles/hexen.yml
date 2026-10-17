@@ -1,0 +1,37 @@
+# Hexen (DOS, 1.1) - als DOS.YML in den Spielordner (Laufwerk C:) legen. DOSBox Pure nimmt die
+# input_pad_*-Zeilen als Gamepad-Belegung von Port 0 (ersetzt die eingebaute Keyb2Joypad-
+# Belegung). Gilt im Pad-Modus (xrshell_input = pad). Vorbereitet, ungeprueft.
+# RetroPad-Namen (libretro) -> Quest-Controller in XRShell (xrshell_input = pad,
+# padmap::kDosPad in src/pad_mapping.cpp):
+#   r = Trigger rechts   l2 = Griff rechts   y = A   b = B   x = X   start = Y
+#   l = Trigger links    r3 = rechten Stick druecken
+#   l3 = linken Stick druecken: bleibt frei = DOSBox-Pure-Menue/Bildschirmtastatur
+#   Steuerkreuz (up/down/left/right) sendet XRShell im Pad-Modus nicht - nicht belegen.
+# Tasten = Standardbelegung des Spiels (HEXEN.CFG: wie Heretic, dazu / = springen); Maus im Spiel aus lassen.
+
+input_pad_lstick_up: up Vorwaerts
+input_pad_lstick_down: down Rueckwaerts
+input_pad_lstick_left: comma Seitwaerts links
+input_pad_lstick_right: period Seitwaerts rechts
+input_pad_rstick_left: left Drehen links
+input_pad_rstick_right: right Drehen rechts
+input_pad_rstick_up: pagedown Hochsehen
+input_pad_rstick_down: delete Runtersehen
+input_pad_r: leftctrl Feuern
+input_pad_l2: leftshift Rennen
+input_pad_y: space Benutzen / Oeffnen
+input_pad_b: wheel Waffen- und Inventarrad
+input_pad_x: tab Karte
+input_pad_start: esc Menue
+input_pad_l: enter Artefakt benutzen / Menue OK
+input_pad_r3: slash Springen
+input_wheel_1: 1 Waffe 1
+input_wheel_2: 2 Waffe 2
+input_wheel_3: 3 Waffe 3
+input_wheel_4: 4 Waffe 4
+input_wheel_5: leftbracket Inventar links
+input_wheel_6: rightbracket Inventar rechts
+input_wheel_7: pageup Hochfliegen
+input_wheel_8: insert Runterfliegen
+input_wheel_9: end Blick zentrieren
+input_wheel_10: y Ja (Abfragen)

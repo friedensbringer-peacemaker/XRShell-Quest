@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shader-Vorschau</title>
+<style>
+  :root { --bg: #f4f4f6; --fg: #17181c; --dim: #5b5f6b; --ok: #2e784c; --bad: #b3261e; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #131418; --fg: #eceef2; --dim: #9aa0ad; --ok: #6fd39a; --bad: #ff8a80; } }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; }
+  #log { white-space: pre-wrap; font-family: ui-monospace, monospace; color: var(--dim); }
+  .ok { color: var(--ok); } .bad { color: var(--bad); }
+  img { max-width: 100%; image-rendering: pixelated; border: 1px solid var(--dim); margin: 8px 0; }
+</style>
+</head>
+<body>
+<h1>XRShell: Bildschirm-Shader (WebGL2 = GLSL ES 3.00)</h1>
+<p>Quelle: <code>src/quad_renderer.cpp</code> (kVertex/kFragment, Basis- und HD-Programm). Testmuster 320×200,
+Ebenen-Pass wie <code>drawScreenLayer()</code> mit ganzzahligem Maßstab 6 (1920×1200).</p>
+<div id="status">läuft …</div>
+<div id="log"></div>
+<div id="images"></div>
+<script>
+'use strict';
+const FW = 320, FH = 200, TW = 1024, TH = 768, SCALE = 6;
+const logEl = document.getElementById('log');
+const log = (t) => { logEl.textContent += t + '\n'; };
+
+// 5×7-Pixelschrift (nur die Zeichen des Testmusters)
+const FONT = {
+  'X': ['10001','10001','01010','00100','01010','10001','10001'],
+  'R': ['11110','10001','10001','11110','10100','10010','10001'],
+  'S': ['01111','10000','10000','01110','00001','00001','11110'],
+  'H': ['10001','10001','10001','11111','10001','10001','10001'],
+  'E': ['11111','10000','10000','11110','10000','10000','11111'],
+  'L': ['10000','10000','10000','10000','10000','10000','11111'],
+  'D': ['11100','10010','10001','10001','10001','10010','11100'],
+  '3': ['11110','00001','00001','01110','00001','00001','11110'],
+  '2': ['01110','10001','00001','00010','00100','01000','11111'],
+  '0': ['01110','10001','10011','10101','11001','10001','01110'],
+  ' ': ['00000','00000','00000','00000','00000','00000','00000'],
+};
+
+// Testmuster 320×200 (RGB): Pixelkreise, Diagonalen 1:1/1:2/2:1, Treppen, Schachbrett,
+// Schrift, Farbbalken, Einzelpixel — typische Kanten in DOS-Grafik.
+function makePattern() {
+  const px = new Uint8Array(FW * FH * 3);
+  const set = (x, y, r, g, b) => {
+    if (x < 0 || y < 0 || x >= FW || y >= FH) return;
+    const i = (y * FW + x) * 3; px[i] = r; px[i + 1] = g; px[i + 2] = b;
+  };
+  for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+    const band = Math.floor(y / 25);
+    set(x, y, 16 + band * 6, 24 + band * 10, 64 + band * 12);     // Himmel in Stufen (VGA-artig)
+  }
+  for (let x = 0; x < FW; x++) for (let y = 150; y < FH; y++) set(x, y, 40, 110, 40);   // Wiese
+  // gefüllter Kreis + Umriss
+  for (let y = -26; y <= 26; y++) for (let x = -26; x <= 26; x++) {
+    const d = Math.sqrt(x * x + y * y);
+    if (d <= 24) set(60 + x, 60 + y, 230, 200, 40);
+    else if (d <= 26) set(60 + x, 60 + y, 120, 60, 10);
+  }
+  // Diagonalen
+  for (let t = 0; t < 60; t++) {
+    set(110 + t, 20 + t, 255, 255, 255);                 // 1:1
+    set(110 + t, 90 - Math.floor(t / 2), 255, 80, 80);   // 2:1
+    set(180 + Math.floor(t / 2), 20 + t, 80, 200, 255);  // 1:2
+  }
+  // Dreieck (Treppenkanten)
+  for (let y = 0; y < 40; y++) for (let x = 0; x <= y; x++) set(230 + x, 30 + y, 200, 60, 200);
+  // Haus-Sprite
+  for (let y = 0; y < 20; y++) for (let x = 0; x < 30; x++) set(250 + x, 130 + y, 180, 80, 50);
+  for (let y = 0; y < 12; y++) for (let x = -y; x <= y; x++) set(265 + x, 118 + y, 140, 30, 30);
+  for (let y = 0; y < 10; y++) for (let x = 0; x < 6; x++) set(262 + x, 140 + y, 60, 30, 10);
+  // Schachbrett 1-px-Zellen und 2-px-Zellen
+  for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) {
+    if ((x + y) % 2) set(20 + x, 110 + y, 255, 255, 255); else set(20 + x, 110 + y, 0, 0, 0);
+    if ((Math.floor(x / 2) + Math.floor(y / 2)) % 2) set(50 + x, 110 + y, 255, 255, 255); else set(50 + x, 110 + y, 0, 0, 0);
+  }
+  // Einzelpixel und Farbbalken
+  for (let i = 0; i < 12; i++) set(90 + i * 4, 120, 255, 255, 0);
+  const bars = [[255,0,0],[0,255,0],[0,0,255],[255,255,0],[0,255,255],[255,0,255],[255,255,255],[0,0,0]];
+  bars.forEach((c, i) => { for (let y = 0; y < 14; y++) for (let x = 0; x < 12; x++) set(90 + i * 12 + x, 130 + y, c[0], c[1], c[2]); });
+  // Schrift
+  const text = 'XRSHELL HD 320X200';
+  for (let k = 0; k < text.length; k++) {
+    const g = FONT[text[k]];
+    for (let y = 0; y < 7; y++) for (let x = 0; x < 5; x++)
+      if (g[y][x] === '1') set(150 + k * 6 + x, 165 + y, 255, 255, 255);
+  }
+  return px;
+}
+
+function extract(src, name) {
+  const m = src.match(new RegExp('const char\\* ' + name + ' = R"\\(([\\s\\S]*?)\\)";'));
+  if (!m) throw new Error(name + ' nicht gefunden');
+  return m[1];
+}
+
+function compile(gl, type, text, what) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, text);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(what + ': ' + gl.getShaderInfoLog(s));
+  return s;
+}
+
+function program(gl, vs, fs, hd) {
+  // wie buildProgram(): „#define XRSHELL_HD 1“ hinter der #version-Zeile
+  const frag = hd ? fs.replace('\n', '\n#define XRSHELL_HD 1\n') : fs;
+  const p = gl.createProgram();
+  gl.attachShader(p, compile(gl, gl.VERTEX_SHADER, vs, (hd ? 'HD' : 'Basis') + ' Vertex'));
+  gl.attachShader(p, compile(gl, gl.FRAGMENT_SHADER, frag, (hd ? 'HD' : 'Basis') + ' Fragment'));
+  gl.bindAttribLocation(p, 0, 'aPos');
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error('Link: ' + gl.getProgramInfoLog(p));
+  return p;
+}
+
+async function save(name, blob) {
+  const r = await fetch('/save/' + name, { method: 'POST', body: blob });
+  if (!r.ok) throw new Error('Speichern ' + name + ': ' + r.status);
+}
+
+function toPng(canvas) { return new Promise((res) => canvas.toBlob(res, 'image/png')); }
+
+async function main() {
+  const src = await (await fetch('/src/quad_renderer.cpp')).text();
+  const vs = extract(src, 'kVertex'), fs = extract(src, 'kFragment');
+  const W = FW * SCALE, H = FH * SCALE;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const gl = canvas.getContext('webgl2', { premultipliedAlpha: false, preserveDrawingBuffer: true, antialias: false });
+  if (!gl) throw new Error('kein WebGL2');
+  const progs = { base: program(gl, vs, fs, false), hd: program(gl, vs, fs, true) };
+  log('Basis- und HD-Programm kompiliert und gelinkt.');
+
+  // Textur 1024×768, Frame oben links, Bytes wie libretro XRGB8888 auf arm64: B, G, R, X.
+  const pat = makePattern();
+  const tex = new Uint8Array(TW * TH * 4);
+  for (let y = 0; y < FH; y++) for (let x = 0; x < FW; x++) {
+    const s = (y * FW + x) * 3, d = (y * TW + x) * 4;
+    tex[d] = pat[s + 2]; tex[d + 1] = pat[s + 1]; tex[d + 2] = pat[s]; tex[d + 3] = 255;
+  }
+  const t = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, TW, TH, 0, gl.RGBA, gl.UNSIGNED_BYTE, tex);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+  // Einheits-Quad wie QuadRenderer::init (Pos + UV)
+  const quad = new Float32Array([-0.5,-0.5,0, 0,1,  0.5,-0.5,0, 1,1,  0.5,0.5,0, 1,0,
+                                 -0.5,-0.5,0, 0,1,  0.5,0.5,0, 1,0,  -0.5,0.5,0, 0,0]);
+  const vbo = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+  gl.bufferData(gl.ARRAY_BUFFER, quad, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 20, 0);
+  gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 20, 12);
+
+  const filters = [ { id: 0, name: 'scharf' }, { id: 1, name: 'weich' }, { id: 2, name: 'scanlines' },
+                    { id: 3, name: 'crt' }, { id: 4, name: 'hd' }, { id: 5, name: 'hd-scanlines' } ];
+  const images = {};
+  for (const f of filters) {
+    const p = f.id >= 4 ? progs.hd : progs.base;
+    gl.useProgram(p);
+    const u = (n) => gl.getUniformLocation(p, n);
+    gl.uniform1i(u('uTex'), 0);
+    gl.uniformMatrix4fv(u('uMvp'), false, new Float32Array([2,0,0,0, 0,2,0,0, 0,0,1,0, 0,0,0,1]));
+    gl.uniform2f(u('uUvScale'), FW / TW, FH / TH);
+    gl.uniform2f(u('uUvOffset'), 0, 0);
+    gl.uniform2f(u('uTexSize'), TW, TH);
+    gl.uniform2f(u('uFrameSize'), FW, FH);
+    gl.uniform1i(u('uFilter'), f.id);
+    gl.uniform1f(u('uSat'), 1); gl.uniform1f(u('uContrast'), 1);
+    gl.uniform1i(u('uKeyMode'), 0);
+    gl.uniform1i(u('uMode'), 2);
+    gl.viewport(0, 0, W, H);
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    const t0 = performance.now();
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    const pixels = new Uint8Array(W * H * 4);
+    gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, pixels);   // erzwingt Fertigstellung
+    const ms = performance.now() - t0;
+    const err = gl.getError();
+    if (err) throw new Error('GL-Fehler ' + err + ' bei ' + f.name);
+    // Plausibilität: Bild deckend, nicht einfarbig
+    let opaque = 0, distinct = new Set();
+    for (let i = 0; i < pixels.length; i += 4 * 97) { if (pixels[i + 3] === 255) opaque++; distinct.add(pixels[i] << 16 | pixels[i + 1] << 8 | pixels[i + 2]); }
+    log(`${f.name}: ${W}×${H} in ${ms.toFixed(1)} ms (inkl. Readback, Browser-GPU), Farben ${distinct.size}, deckend ${opaque}/${Math.ceil(pixels.length / 4 / 97)}`);
+    images[f.name] = { pixels, canvas: await toCanvas(pixels, W, H) };
+  }
+
+  // Referenzbilder: HD, HD + Scanlines, Scharf (Vergleich) + Ausschnitt 2× nebeneinander.
+  for (const name of ['hd', 'hd-scanlines', 'scharf']) {
+    await save('shader-' + name + '-320x200.png', await toPng(images[name].canvas));
+    show(images[name].canvas, name);
+  }
+  const cw = 840, ch = 420, cx = 32 * SCALE, cy = 16 * SCALE;   // Kreis + Diagonalen
+  const cmp = document.createElement('canvas');
+  cmp.width = cw * 2 + 8; cmp.height = ch;
+  const g2 = cmp.getContext('2d');
+  g2.fillStyle = '#808080'; g2.fillRect(0, 0, cmp.width, cmp.height);
+  g2.drawImage(images.scharf.canvas, cx, cy, cw, ch, 0, 0, cw, ch);
+  g2.drawImage(images.hd.canvas, cx, cy, cw, ch, cw + 8, 0, cw, ch);
+  await save('shader-vergleich-scharf-hd.png', await toPng(cmp));
+  show(cmp, 'Ausschnitt: links Scharf, rechts HD');
+  await save('shader-log.txt', new Blob([logEl.textContent]));
+  document.getElementById('status').innerHTML = '<span class="ok">fertig – Bilder unter tests/out/shader-*.png</span>';
+  window.shaderPreviewDone = 'ok';
+}
+
+function toCanvas(pixels, W, H) {
+  // readPixels liefert von unten nach oben → zeilenweise spiegeln
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d'); const img = g.createImageData(W, H);
+  for (let y = 0; y < H; y++) img.data.set(pixels.subarray((H - 1 - y) * W * 4, (H - y) * W * 4), y * W * 4);
+  g.putImageData(img, 0, 0);
+  return c;
+}
+
+function show(canvas, caption) {
+  const fig = document.createElement('figure');
+  const img = document.createElement('img'); img.src = canvas.toDataURL(); img.alt = caption;
+  const cap = document.createElement('figcaption'); cap.textContent = caption;
+  fig.append(img, cap); document.getElementById('images').append(fig);
+}
+
+main().catch((e) => {
+  document.getElementById('status').innerHTML = '<span class="bad">Fehler</span>';
+  log('FEHLER: ' + e.message);
+  window.shaderPreviewDone = 'FEHLER: ' + e.message;
+});
+</script>
+</body>
+</html>

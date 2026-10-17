@@ -1,0 +1,12 @@
+# Populous II (Bullfrog 1991, DOS/GOG) — als xrshell.keys in den Spielordner legen.
+# Handbuch „Keyboard Command Summary For The IBM Version“. Maus wie gewohnt:
+# Trigger = Land heben / Symbol, B = Land senken, rechter Stick = Karte scrollen
+# (Pfeiltasten), rechter Griff halten + Hand bewegen = Karte ziehen (ebenfalls Pfeiltasten).
+# X (Bildzoom) und Y (Bildschirmtastatur) bleiben frei.
+
+left_stick_up     = KP_MINUS        # heranzoomen (Minus auf dem Ziffernblock)
+left_stick_down   = KP_PLUS         # herauszoomen (Plus auf dem Ziffernblock)
+left_stick_left   = MINUS           # Spiel langsamer (Minus, nicht Ziffernblock)
+left_stick_right  = LSHIFT+EQUALS   # Spiel schneller (Plus = Shift + Gleich, US-Belegung)
+a = F7                              # Vollbild / normale Ansicht
+left_trigger = F10                  # Pause an/aus

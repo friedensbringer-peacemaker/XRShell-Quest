@@ -1,0 +1,20 @@
+# Doom / Doom II / Final Doom (DOS 1.9, id Software) - als xrshell.opt in den Spielordner legen
+# (tools/prepare-dos-games.ps1 macht das, gleiche Datei fuer alle vier Doom-Ordner).
+# Vorbereitet, ungeprueft gegen echte Installer und im Headset.
+#
+# Pad-Modus: XRShell schickt ein RetroPad mit Analogsticks an Port 0, kein Laser-Mauszeiger.
+# Die Belegung kommt aus C:\DOS.YML (profiles/doom.yml), nicht aus xrshell.keys.
+xrshell_input = pad
+# Eingebaute Keyb2Joypad-Belegung bleibt erlaubt; DOS.YML ersetzt sie ohnehin.
+dosbox_pure_auto_mapping = true
+# Doom braucht einen schnellen 486: volle Leistung (Spiellogik laeuft fest mit 35 Hz,
+# zu schnell wird es nicht). Ruckelt es, zuerst CPU-Level anheben (xr-image-quality).
+dosbox_pure_cycles = max
+# Soundblaster 16 wie die anderen Profile (220h, IRQ 7, DMA 1, HDMA 5). DEFAULT.CFG im
+# Spielordner steht passend auf snd_sfxdevice 3 / snd_musicdevice 3 (Musik ueber OPL-FM,
+# keine Soundfont noetig), snd_sbport 544 (= 220h), snd_sbirq 7, snd_sbdma 1.
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5
+# Bild: Scharf statt HD (xBR). xBR glaettet Pixel-Art-Kanten und verschmiert die perspektivischen
+# Wand-/Bodentexturen eines 3D-Shooters zu Klecksen; im VR-Menue pro Spiel aenderbar.
+xrshell_filter = scharf

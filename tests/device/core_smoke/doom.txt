@@ -1,0 +1,20 @@
+# PrBoom (xr.shooter), Belegung padmap kDoom: A = Benutzen/Bestätigen, Y = Menü (Start),
+# TR = Feuer, linker Stick laufen (Menü hoch/runter), rechter Stick drehen.
+# <name> <halten s> <warten s> [tasten]
+titel          0    5
+menue          0.15 1     Y
+neues-spiel    0.15 1     A
+bestaetigen-2  0.15 1     A
+bestaetigen-3  0.15 3     A
+vorwaerts      2    0.3   ly=1
+drehen         1    0.3   rx=1
+feuern         1.5  1     TR
+@savestate
+benutzen       0.15 0.5   A
+rennen-links   1    0.3   GR lx=-1
+menue-quit     0.15 0.8   Y
+quit-hoch      0.15 0.8   ly=1
+quit-waehlen   0.15 1     A
+quit-ja-A      0.15 2     A
+quit-ja-TR     0.15 2     TR
+nachlauf       0    1

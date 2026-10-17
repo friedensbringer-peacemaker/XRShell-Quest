@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  XRShell M0 — Android-Manifest für Meta Quest / Android XR.
+
+  Die App ist eine reine native_app_glue-App (hasCode=false, kein Java/Kotlin).
+  Wichtig für VR: vr_only-Modus, Head-Tracking-Feature, Quest-Kategorien.
+  App wird NICHT über den Store gelistet — Vertrieb über SideQuest/ADB (M0).
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- OpenXR-Hardwarezugriff -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Khronos-OpenXR-Loader: Zugriff auf den Runtime-Broker (Quest, Pico, Android XR) -->
+    <uses-permission android:name="org.khronos.openxr.permission.OPENXR" />
+    <uses-permission android:name="org.khronos.openxr.permission.OPENXR_SYSTEM" />
+
+    <!-- Paket-Sichtbarkeit (ab Android 11): ohne diese Queries findet der
+         Loader weder Runtime-Broker noch Runtime-/Layer-Services -->
+    <queries>
+        <provider android:authorities="org.khronos.openxr.runtime_broker;org.khronos.openxr.system_runtime_broker" />
+        <intent>
+            <action android:name="org.khronos.openxr.OpenXRRuntimeService" />
+        </intent>
+        <intent>
+            <action android:name="org.khronos.openxr.OpenXRApiLayerService" />
+        </intent>
+    </queries>
+
+    <!-- VR-Modus verpflichtend; ohne Headset startet die App nicht -->
+    <uses-feature android:name="android.software.vr.mode" android:required="true" />
+    <uses-feature android:name="android.hardware.vr.headtracking" android:required="true" />
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <!-- Passthrough (XR_FB_passthrough) als Hintergrund aus dem VR-Menü; optional -->
+    <uses-feature android:name="com.oculus.feature.PASSTHROUGH" android:required="false" />
+
+    <application
+        android:allowBackup="false"
+        android:label="${appLabel}"
+        android:hasCode="false">
+
+        <!-- VR-only gilt für die ganze App (laut Meta-Doku unter <application>) -->
+        <meta-data android:name="com.samsung.android.vr.application.mode" android:value="vr_only" />
+        <!-- Quest-Startbild statt der drei Ladepunkte: assets/vr_splash.png (je Flavor zur Build-Zeit
+             erzeugt, build.gradle generateSplash*) mit App-Name, Version und Startdauer -->
+        <meta-data android:name="com.oculus.ossplash" android:value="true" />
+
+        <!-- Nativer Einstiegspunkt: android_main in libxrshell.so -->
+        <activity
+            android:name="android.app.NativeActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:configChanges="screenSize|orientation|keyboardHidden|keyboard|navigation|uiMode">
+            <meta-data android:name="android.app.lib_name" android:value="xrshell" />
+            <meta-data android:name="com.oculus.supportedDevices" android:value="all" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <!-- Quest: im VR-Bereich sichtbar statt als 2D-Panel -->
+                <category android:name="com.oculus.intent.category.VR" />
+                <!-- Herstellerneutral (Khronos): immersive App fürs Headset -->
+                <category android:name="org.khronos.openxr.intent.category.IMMERSIVE_HMD" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

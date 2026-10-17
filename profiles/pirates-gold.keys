@@ -1,0 +1,12 @@
+# Pirates! Gold (MicroProse 1993, DOS/GOG-CD) — als xrshell.keys in den Spielordner legen
+# (tools/prepare-dos-games.ps1 macht das). Handbuch Teil II „Game Controls“.
+# Grundbelegung bleibt: Laser = Maus, Trigger = linke, B/Griff = rechte Maustaste (Griff per xrshell.opt),
+# rechter Stick = Pfeiltasten. X (Bildzoom) und Y (Bildschirmtastatur) bleiben frei.
+
+left_stick_left   = LEFT     # Schiff/Figur nach links (auf See: links drehen)
+left_stick_right  = RIGHT    # nach rechts
+left_stick_up     = UP       # Segel setzen / nach oben
+left_stick_down   = DOWN     # Segel reffen / nach unten
+a = ENTER                    # Auswahl bestätigen, Kanone feuern
+left_trigger = SPACE         # Kapitänskajüte (auch: Kanone feuern im Seegefecht)
+right_stick_click = ESC      # Bildschirm verlassen

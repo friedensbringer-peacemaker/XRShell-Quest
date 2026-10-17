@@ -1,0 +1,21 @@
+# Quake (DOS, 1.06, quake.exe) - als xrshell.opt in den Spielordner legen (von Hand; prepare-dos-games.ps1
+# hat dafuer keinen Zweig). Vorbereitet, ungeprueft gegen echte Installer und im Headset.
+# Kaufversion/Dateien/Start: docs/DOS-SPIELE.md, Abschnitt "Shooter".
+#
+# Pad-Modus: RetroPad mit Analogsticks an Port 0, kein Laser-Mauszeiger. Belegung aus
+# C:\DOS.YML (profiles/quake.yml), sonst die eingebaute Keyb2Joypad-Belegung von DOSBox Pure.
+xrshell_input = pad
+dosbox_pure_auto_mapping = true
+# Quake braucht einen Pentium mit FPU - mehr als jedes andere Profil. CPU-Level der Quest
+# hochsetzen (xr-image-quality); 320x200 lassen, SVGA-Modi sind auf der Quest zu langsam.
+dosbox_pure_cycles = max
+dosbox_pure_cpu_type = pentium_slow
+dosbox_pure_memory_size = 32
+# Soundblaster 16 wie die anderen Profile (220h, IRQ 7, DMA 1, HDMA 5); Quake erkennt
+# die SB16 ueber BLASTER; Musik gibt es nur als CD-Audio (Image mit Audiospuren auf C:).
+
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5
+# Bild: Scharf statt HD (xBR). xBR glaettet Pixel-Art-Kanten und verschmiert die perspektivischen
+# Wand-/Bodentexturen eines 3D-Shooters zu Klecksen; im VR-Menue pro Spiel aenderbar.
+xrshell_filter = scharf

@@ -1,0 +1,9 @@
+# SimCity 2000 Special Edition (Maxis 1995/96, DOS/GOG) — als xrshell.keys in den Spielordner.
+# Handbuch „Mouse and Keyboard Stuff“: Shift-Klick = Abfrage/Hilfe bzw. Vorgang abbrechen,
+# Strg halten = Zentrieren-Werkzeug. Maus: Trigger = Klick/Ziehen, B = rechte Maustaste.
+# Karte: rechter Griff halten + Hand bewegen bzw. rechter Stick (Pfeiltasten, README „Cursor Keys“).
+# X (Bildzoom) und Y (Bildschirmtastatur, Stadtname) bleiben frei.
+
+left_trigger = LSHIFT    # halten: Shift-Klick (Abfrage, Hilfe, Bauen abbrechen)
+a = LCTRL                # halten: Strg-Klick (Stadt um den Punkt zentrieren)
+right_stick_click = ESC  # Dialog/Fenster schließen

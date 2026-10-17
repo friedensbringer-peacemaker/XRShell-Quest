@@ -1,0 +1,19 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = 'XRShell'
+// Einzelmodul-Projekt: Das App-Modul ist das Root-Projekt selbst
+// (Quellen liegen in android/src/main/, build.gradle im selben Verzeichnis).
+// Kein 'include :app' — das Verzeichnis android/app existiert nicht und
+// Gradle 9 verweigert das Konfigurieren nicht existierender Projektverzeichnisse.

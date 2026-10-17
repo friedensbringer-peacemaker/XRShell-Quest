@@ -1,0 +1,18 @@
+# Populous II (DOS/GOG) — als xrshell.opt in den Spielordner legen.
+# GOG: cycles=20000 (core=auto). DOSBox-Pure-Stufen daneben: 13400 (−33 %) und 26800 (+34 %).
+# 26800 = 486DX2/66: Populous II regelt das Spieltempo selbst (+/− laut Handbuch, hier Stick links
+# ←/→), mehr Zyklen machen nur Bildaufbau/Scrollen flüssiger. Zu schnell: im Spiel „−“ bzw.
+# VR-Menü → DOS → CPU-Tempo 13400.
+dosbox_pure_cycles = 26800
+# Soundblaster wie in GOGs Konfiguration (220h, IRQ 5, DMA 1). POP2 /ss nutzt SOUND\SB.BIN,
+# das Intro AdLib/OPL; es gibt keine Setup-Datei mit IRQ, daher GOG-Werte unverändert.
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I5 D1 H5
+# Maus „direct“: Spielzeiger absolut unter dem Laser (DOSBox-Pure setzt die INT-33-Position aus
+# dem Laserpunkt). Rückfall, falls das Spiel die Position ignoriert (Zeiger klebt/springt):
+#   dosbox_pure_mouse_input = virtual   und ggf.   dosbox_pure_mouse_speed_factor = 1.5
+dosbox_pure_mouse_input = direct
+# Bild: HD-Filter (xBR-Kantenglättung) als Standard, bis im VR-Menü ein anderer gewählt wird.
+xrshell_filter = hd
+# Rechter Griff halten + Hand bewegen = Karte ziehen (Pfeiltasten, Handbuch „cursor keys or the number pad“, VR-Menü → Steuerung).
+xrshell_grip_right = drag

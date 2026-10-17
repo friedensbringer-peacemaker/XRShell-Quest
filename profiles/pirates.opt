@@ -1,0 +1,17 @@
+# Pirates! (1987, DOS/GOG) — als xrshell.opt in den Spielordner legen.
+# GOGs Hauptstart ist die EGA-Variante (machine=ega, PC-Lautsprecher); XRSTART.BAT
+# beantwortet per STUFFIT die Grafikfrage mit 3 = EGA. Passende Grafikkarte dazu:
+dosbox_pure_machine = ega
+# Tempo: GOG cycles=auto = laut DOSBox-0.74-Handbuch 3000 Zyklen für Real-Mode-Spiele (PIR.EXE
+# ist Real Mode, gebaut für 4,77-MHz-PCs). Nächste DOSBox-Pure-Stufe: 286/12,5 MHz = 2750.
+# DOSBox-Pures „auto“ legt das Tempo anders fest; fester Wert = wie GOG. Zu träge/zu schnell:
+# VR-Menü → DOS → CPU-Tempo.
+dosbox_pure_cycles = 2750
+# Maus „direct“: Spielzeiger absolut unter dem Laser (DOSBox-Pure setzt die INT-33-Position aus
+# dem Laserpunkt). Rückfall, falls das Spiel die Position ignoriert (Zeiger klebt/springt):
+#   dosbox_pure_mouse_input = virtual   und ggf.   dosbox_pure_mouse_speed_factor = 1.5
+dosbox_pure_mouse_input = direct
+# Bild: HD-Filter (xBR-Kantenglättung) als Standard, bis im VR-Menü ein anderer gewählt wird.
+xrshell_filter = hd
+# Rechter Griff ohne Funktion: kein Mausspiel, keine Karte zum Ziehen (Pfeiltasten über die Sticks).
+xrshell_grip_right = off

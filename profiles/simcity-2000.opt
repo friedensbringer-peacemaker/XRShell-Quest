@@ -1,0 +1,25 @@
+# SimCity 2000 SE (DOS/GOG) — als xrshell.opt in den Spielordner legen.
+# Effekte: SC2000.CFG auf Soundblaster 16 220h/IRQ 7/DMA 1 gepatcht (GOG: IRQ 5).
+# Musik: Roland MT-32 über MPU-401 wie bei GOG; DOSBox-Pure spielt sie mit C:\DOSBOX.SF2.
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5
+# GOG: cycles=20000; die Simulation läuft taktgesteuert, mehr Zyklen = flüssigerer Bildaufbau.
+dosbox_pure_cycles = max
+# Grafik: SC2000.CFG VIDEOCARD=ve:32 = VESA 800×600, 256 Farben (setzt prepare-dos-games.ps1;
+# GOG-Vorgabe ve:31 = 640×480). Codes aus der Treibertabelle in SC2K.EXE: ve:20 800×600×16,
+# ve:21 1024×768×16, ve:31 640×480×256, ve:32 800×600×256, ve:33 1024×768×256 (ve:53/55 ebenfalls
+# 1024×768). 800×600: ~2 Displaypixel je Spielpixel auf dem 66°-Schirm, Texte gut lesbar, 56 %
+# mehr Stadt als 640×480; 1024×768 (= XRShell-Texturgrenze) nur mit -SimCityResolution 1024x768.
+# Karte wie bei GOG (machine=svga_s3): S3 Trio64 mit eingebautem VESA-BIOS, 2 MB reichen bis 1024×768.
+dosbox_pure_machine = svga
+dosbox_pure_svga = svga_s3
+# SimCity 2000 läuft in VESA (VIDEOCARD=ve:32): dort führt DOSBox-Pure den Mausbereich nicht nach.
+# Maus „virtual“ (relativ): „direct“ setzt die INT-33-Position als Laser · max_x/max_y, und in
+# VESA-Modi (> 13h) führt DOSBox-Pure max_x/max_y nicht nach. XRShell fängt den Zeiger beim
+# Schließen des VR-Menüs und wenn der Laser aufs Bild kommt; Faktor pro Achse im VR-Menü → DOS
+# („Maus waagerecht/senkrecht“, „Abgleichen“), gespeichert pro Spiel.
+dosbox_pure_mouse_input = virtual
+# Bild: HD-Filter (xBR-Kantenglättung) als Standard, bis im VR-Menü ein anderer gewählt wird.
+xrshell_filter = hd
+# Rechter Griff halten + Hand bewegen = Karte ziehen (Pfeiltasten laut README „Cursor Keys - scroll around your city“, VR-Menü → Steuerung).
+xrshell_grip_right = drag

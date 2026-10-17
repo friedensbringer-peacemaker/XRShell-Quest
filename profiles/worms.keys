@@ -1,0 +1,14 @@
+# Worms United (Team17 1995/96, DOS, Steam-App 70640) — als xrshell.keys in den Spielordner.
+# Tasten laut Spiel: Pfeile links/rechts = laufen, hoch/runter = zielen, Leertaste = feuern
+# (halten = Kraft), Enter = springen, Rücktaste = Rückwärtssalto, Tab = nächster Wurm (nur
+# wenn im Spielmodus erlaubt), 1–5 = Zündzeit, Esc = Rundenmenü.
+# Grundbelegung XRShell: rechter Stick = Pfeiltasten (laufen/zielen), Trigger = Linksklick
+# (Waffe wählen, Ziel setzen), B/Griff rechts = Rechtsklick (Waffenleiste).
+# X (Bildzoom) und Y (Bildschirmtastatur, z. B. Zündzeit 1–5) bleiben frei.
+# Ungeprüft im Headset (Stand 2026-10-03).
+
+a = SPACE                    # feuern – halten lädt die Schusskraft auf
+left_trigger = ENTER         # springen (im Menü: bestätigen)
+left_stick_down = BACKSPACE  # Rückwärtssalto
+left_stick_left = TAB        # nächster Wurm (wenn erlaubt)
+right_stick_click = ESC      # Rundenmenü / zurück

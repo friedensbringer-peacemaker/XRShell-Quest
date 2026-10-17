@@ -1,0 +1,11 @@
+# Beneath a Steel Sky (1994, GOG) im ScummVM-Core (xr.adventure, #28)
+# Spielordner auf der Quest: Android/data/xr.adventure/files/game/BASS/
+#   sky.dnr + sky.dsk (aus dem GOG-Installer per innoextract), dazu
+#   sky.scummvm (Inhalt „sky“, Vorlage profiles/beneath-a-steel-sky.scummvm)
+#   und diese Datei als xrshell.keys.
+# Grundbelegung bleibt: Laser = Zeiger, Trigger = Linksklick (gehen/benutzen),
+# B = Rechtsklick (ansehen). X = Bildzoom, Y = Bildschirmtastatur bleiben frei.
+
+a = F5                    # Kontrollfeld: Speichern/Laden/Optionen
+left_trigger = PERIOD     # aktuelle Sprechzeile überspringen
+right_stick_click = ESC   # Zwischensequenz/Intro überspringen

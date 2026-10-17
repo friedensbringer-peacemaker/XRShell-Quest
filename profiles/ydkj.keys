@@ -1,0 +1,13 @@
+# Quiz-Reihe von Jellyvision (1995–97, Windows 3.1) — als xrshell.keys in den Spielordner.
+# Spiel ist reine Tastatur: Buzzer Spieler 1 = Q (2 = B, 3 = P), Antworten 1–4, „Press spacebar to
+# skip“, Name tippen + Enter. Im Headset spielt eine Person → Spieler 1.
+# Antworten im Uhrzeigersinn ab oben auf dem linken Stick (Stick ohne linken Griff = Spiel).
+# Rechter Trigger bleibt Mausklick, X (Bildzoom) und Y (Bildschirmtastatur: Name) bleiben frei.
+
+a = Q                    # Buzzer Spieler 1 (auch Jack Attack)
+left_stick_up = 1        # Antwort 1 / „1 Spieler“ / Kategorie 1
+left_stick_right = 2     # Antwort 2
+left_stick_down = 3      # Antwort 3
+left_stick_left = 4      # Antwort 4
+left_trigger = enter     # Name bestätigen
+right_stick_click = space   # Zwischenspiel überspringen

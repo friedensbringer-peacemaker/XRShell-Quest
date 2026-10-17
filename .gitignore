@@ -1,0 +1,55 @@
+# Build-Artefakte
+build/
+build-android/
+android/app/build/
+.cxx/
+.externalNativeBuild/
+
+# Gradle
+.gradle/
+local.properties
+*.iml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+
+# FetchContent-Abhälle (OpenXR wird zur Build-Zeit geladen)
+_deps/
+
+# M1a: Core-Download (Gradle holt DOSBox-Pure zur Build-Zeit, nie committen)
+android/core-download/
+
+# Keine Spiele-Assets — niemals committen (siehe Konzept, Abschnitt 2)
+*.iso
+*.cue
+*.gog
+*.rom
+*.chd
+*.mpq
+*.MPQ
+# Shooter-Daten (Doom/Heretic/Hexen-WAD, Quake-PAK, Build-GRP/RFF)
+*.wad
+*.WAD
+*.pak
+*.PAK
+*.grp
+*.GRP
+*.rff
+*.RFF
+# Modul-Abbilder, Spielstände, Firmware des Spielers (nie ins Repo)
+*.sfc
+*.smc
+*.fig
+*.swc
+*.srm
+dsp*.rom
+
+# Ausgaben der Geräte-Tests (Menü-Vorschau)
+/tests/out/
+# Host-/Geräte-Testprogramme (tests/, NDK-Build)
+build-test/

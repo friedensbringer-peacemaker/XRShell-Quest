@@ -1,0 +1,11 @@
+# DOSBox-Pure, xrshell_input = pad (padmap kDosPad, DOS.YML profiles/quake.yml):
+# A = pad y (Enter), Y = Start (Esc), TR = pad r (Strg, Feuer). Musik = CD-Audio (QUAKE.CUE als D:).
+start          0    25
+menue          0.15 1.5   Y
+einzelspieler  0.15 1.5   A
+neues-spiel    0.15 10    A
+vorwaerts      2    0.3   ly=1
+drehen         1    0.3   rx=1
+feuern         1.5  1     TR
+@savestate
+musik          0    10

@@ -1,0 +1,11 @@
+# Baphomets Fluch (Broken Sword, 1996) im ScummVM-Core (xr.adventure) — als xrshell.keys in den Spielordner
+# (tools/prepare-adventure.sh legt die Datei automatisch dazu).
+# Grundbelegung bleibt: Laser = Zeiger, Trigger = Linksklick (gehen/benutzen),
+# B = Rechtsklick (ansehen), linker oder rechter Griff = Fenster greifen, X = Bildzoom,
+# Y = Bildschirmtastatur. Speichern/Laden auch über VR-Menü → Spiel → „Spielmenü öffnen“.
+# Geprüft am PC (core_smoketest, SMOKE_KEYS): Strg+F5 öffnet das ScummVM-Menü
+# (Laden/Speichern/Optionen), Esc überspringt das Intro.
+
+a = LCTRL+F5              # ScummVM-Menü: Speichern, Laden, Optionen, Beenden
+right_stick_click = ESC   # Zwischensequenz/Intro überspringen
+game_menu = LCTRL+F5      # Knopf „Spielmenü öffnen“ im VR-Menü

@@ -1,0 +1,28 @@
+# Wolfenstein 3D (DOS, 1.4) - als DOS.YML in den Spielordner (Laufwerk C:) legen. DOSBox Pure nimmt die
+# input_pad_*-Zeilen als Gamepad-Belegung von Port 0 (ersetzt die eingebaute Keyb2Joypad-
+# Belegung). Gilt im Pad-Modus (xrshell_input = pad). Vorbereitet, ungeprueft.
+# RetroPad-Namen (libretro) -> Quest-Controller in XRShell (xrshell_input = pad,
+# padmap::kDosPad in src/pad_mapping.cpp):
+#   r = Trigger rechts   l2 = Griff rechts   y = A   b = B   x = X   start = Y
+#   l = Trigger links    r3 = rechten Stick druecken
+#   l3 = linken Stick druecken: bleibt frei = DOSBox-Pure-Menue/Bildschirmtastatur
+#   Steuerkreuz (up/down/left/right) sendet XRShell im Pad-Modus nicht - nicht belegen.
+# Tasten = Standardbelegung des Spiels (Strg, Leertaste, rechte Shift, Alt+Pfeile, 1-4); Maus im Spiel aus lassen.
+
+input_pad_lstick_up: up Vorwaerts
+input_pad_lstick_down: down Rueckwaerts
+input_pad_lstick_left: leftalt+left Seitwaerts links
+input_pad_lstick_right: leftalt+right Seitwaerts rechts
+input_pad_rstick_left: left Drehen links
+input_pad_rstick_right: right Drehen rechts
+input_pad_r: leftctrl Feuern
+input_pad_l2: rightshift Rennen
+input_pad_y: space+enter Benutzen / Menue OK
+input_pad_b: wheel Waffenrad
+input_pad_x: pause Pause
+input_pad_start: esc Menue
+input_pad_l: y Ja (Abfragen)
+input_wheel_1: 1 Messer
+input_wheel_2: 2 Pistole
+input_wheel_3: 3 Maschinenpistole
+input_wheel_4: 4 Gatling

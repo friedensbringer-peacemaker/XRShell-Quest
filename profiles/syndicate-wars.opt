@@ -1,0 +1,17 @@
+# Syndicate Wars (DOS/GOG-CD) — als xrshell.opt in den Spielordner legen.
+# GOG: cycles=max limit 120000 (Spiel), 20000 (Intro-Film). DOSBox-Pure: max.
+dosbox_pure_cycles = max
+# Soundblaster 16 (SOUND\DIG.INI: SB16.DIG, 220h, IRQ/DMA aus BLASTER), Musik SBPRO2.MDI (OPL).
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5
+# Syndicate Wars wechselt zwischen 320×200 (Einsatz) und 640×480 (Menüs, VESA): im VESA-Modus
+# führt DOSBox-Pure den Mausbereich nicht nach.
+# Maus „virtual“ (relativ): „direct“ setzt die INT-33-Position als Laser · max_x/max_y, und in
+# VESA-Modi (> 13h) führt DOSBox-Pure max_x/max_y nicht nach. XRShell fängt den Zeiger beim
+# Schließen des VR-Menüs und wenn der Laser aufs Bild kommt; Faktor pro Achse im VR-Menü → DOS
+# („Maus waagerecht/senkrecht“, „Abgleichen“), gespeichert pro Spiel.
+dosbox_pure_mouse_input = virtual
+# Bild: HD-Filter (xBR-Kantenglättung) als Standard, bis im VR-Menü ein anderer gewählt wird.
+xrshell_filter = hd
+# Rechter Griff halten + Hand bewegen = Karte ziehen (Pfeiltasten = Ansicht verschieben, VR-Menü → Steuerung).
+xrshell_grip_right = drag

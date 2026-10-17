@@ -1,0 +1,317 @@
+// XRShell Android-Projekt — baut libxrshell.so via CMake und verpackt das APK.
+// Voraussetzung: Android SDK (local.properties sdk.dir oder ANDROID_HOME) + NDK.
+// Läuft identisch auf macOS und Windows — NDK-Auflösung siehe unten (ndkPath).
+
+plugins {
+    // AGP-Version explizit, damit 'com.android.application' ohne Root-Buildskript auflösbar ist.
+    // 8.7.3 ist die letzte 8.7.x und benötigt Gradle 8.9+ (Wrapper pinnt 8.11.1).
+    id 'com.android.application' version '8.7.3'
+}
+
+// Kurzer Git-Commit des Build-Stands (ohne Git: „dev“), „-dirty“ bei lokalen Änderungen.
+def gitShortHash() {
+    try {
+        def hash = providers.exec { commandLine 'git', 'rev-parse', '--short', 'HEAD' }
+                .standardOutput.asText.get().trim()
+        def dirty = providers.exec {
+            commandLine 'git', 'status', '--porcelain', '--untracked-files=no'
+        }.standardOutput.asText.get().trim()
+        return hash + (dirty ? '-dirty' : '')
+    } catch (Exception ignored) {
+        return 'dev'
+    }
+}
+
+// Version je App aus ../version.properties (<flavor>.versionName / <flavor>.versionCode).
+// Ungültige oder fehlende Werte brechen den Build ab (Skill xr-port-qa, Abschnitt Versionierung).
+def versionProps = new Properties()
+def versionFile = file('../version.properties')
+if (!versionFile.exists()) throw new GradleException("version.properties fehlt: ${versionFile}")
+versionFile.withReader('UTF-8') { versionProps.load(it) }
+def appVersion = { String flavor ->
+    def name = versionProps.getProperty(flavor + '.versionName')?.trim()
+    def code = versionProps.getProperty(flavor + '.versionCode')?.trim()
+    if (!name || !(name ==~ /\d+\.\d+\.\d+(-[0-9A-Za-z]+(\.[0-9A-Za-z]+)*)?/))
+        throw new GradleException("version.properties: ${flavor}.versionName ungültig oder fehlt: '${name}' " +
+                                  "(Schema MAJOR.MINOR.PATCH[-preview.N])")
+    if (!code || !(code ==~ /[1-9]\d{0,8}/))
+        throw new GradleException("version.properties: ${flavor}.versionCode ungültig oder fehlt: '${code}' " +
+                                  "(ganze Zahl ab 1)")
+    return [name: name, code: code.toInteger()]
+}
+
+android {
+    namespace 'dev.xrshell'
+    compileSdk 34
+    // NDK r30 auf allen Entwicklungsrechnern — sonst verlangt AGP 8.7.x seine Default-Version 27.x.
+    ndkVersion '30.0.16248370'
+    // NDK außerhalb des SDK (z. B. Homebrew auf macOS): Pfad aus local.properties
+    // (ndk.path=…) oder Umgebungsvariable ANDROID_NDK. Ohne beides nimmt AGP das
+    // SDK-verwaltete NDK unter <sdk>/ndk/<ndkVersion> (Standard auf Windows).
+    // Ersetzt das deprecated ndk.dir in local.properties.
+    def localProps = new Properties()
+    def localPropsFile = file('local.properties')
+    if (localPropsFile.exists()) localPropsFile.withInputStream { localProps.load(it) }
+    def externalNdk = localProps.getProperty('ndk.path') ?: System.getenv('ANDROID_NDK')
+    if (externalNdk) ndkPath externalNdk
+
+    defaultConfig {
+        applicationId "xr.shell"   // App-ID = xr.<name>; namespace (JNI/Java) bleibt dev.xrshell
+        minSdk 29           // Quest 2/3; Android XR ohnehin höher
+        targetSdk 34
+        // versionCode/versionName je Flavor aus version.properties (unten, productFlavors.all)
+
+        externalNativeBuild {
+            cmake {
+                cppFlags '-std=c++17 -Wall -Wextra'
+                arguments '-DANDROID_STL=c++_shared'
+                abiFilters 'arm64-v8a'   // Quest: nur arm64
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path '../CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+
+    // Eine Codebasis, mehrere Apps auf der Quest. Label immer xr.<name>
+    // (AGENTS.md, Regel 6) — ohne Markennamen, auch nicht im Paketnamen.
+    //   shell:   allgemeine XRShell (DOSBox-Pure)
+    //   island:  eigene App für ein Win-3.1-Aufbauspiel (DOSBox-Pure + Windows 3.1), nur DOSBox-Pure
+    //   adventure: Point-and-Click-Adventures (#28), nur ScummVM; Spielauswahl über Ordner
+    //            unter files/games/adventure/ (je Ordner eine *.scummvm), Filter HD pro Spiel
+    //   dos:     DOS-Spielesammlung mit Spielauswahl (Ordner unter files/games/dos/), nur DOSBox-Pure
+    //   fps:     Shooter-Sammlung xr.shooter (Ordner unter files/games/doom|wolf3d|quake/):
+    //            PrBoom, ECWolf, TyrQuake — Gamepad mit Analogsticks (docs/SHOOTER.md)
+    flavorDimensions 'app'
+    productFlavors {
+        shell {
+            dimension 'app'
+            applicationId 'xr.shell'
+            manifestPlaceholders = [appLabel: 'xr.shell']
+        }
+        island {
+            dimension 'app'
+            applicationId 'xr.island'
+            manifestPlaceholders = [appLabel: 'xr.island']
+        }
+        adventure {
+            dimension 'app'
+            applicationId 'xr.adventure'
+            manifestPlaceholders = [appLabel: 'xr.adventure']
+            // Bibliothek wie xr.dosgames: Spiele sind Ordner mit *.scummvm unter files/games/adventure/
+            externalNativeBuild { cmake { cppFlags '-DXRSHELL_LIBRARY=1', '-DXRSHELL_LIBRARY_ADVENTURE=1' } }
+        }
+        dos {
+            dimension 'app'
+            applicationId 'xr.dosgames'
+            manifestPlaceholders = [appLabel: 'xr.dosgames']
+            // Bibliothek: Spiele sind Ordner (= Laufwerk C:), kein Import
+            externalNativeBuild { cmake { cppFlags '-DXRSHELL_LIBRARY=1', '-DXRSHELL_LIBRARY_DOS=1' } }
+        }
+        fps {
+            dimension 'app'
+            applicationId 'xr.shooter'
+            manifestPlaceholders = [appLabel: 'xr.shooter']
+            // Bibliothek wie xr.dosgames: Spiele sind Ordner (Startdatei per Regel), kein Import
+            externalNativeBuild { cmake { cppFlags '-DXRSHELL_LIBRARY=1', '-DXRSHELL_LIBRARY_SHOOTER=1' } }
+        }
+    }
+
+    // Version je App; Commit im Versionsnamen: `dumpsys package` zeigt, welcher Stand installiert ist.
+    def buildHash = gitShortHash()
+    productFlavors.all { flavor ->
+        def v = appVersion(flavor.name)
+        flavor.versionCode = v.code
+        flavor.versionName = v.name + '+' + buildHash
+    }
+
+    buildTypes {
+        debug {
+            // Debug-APK selbstsigniert — genug für SideQuest/ADB
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    // Native Libs beim Installieren entpacken (ersetzt extractNativeLibs="true"
+    // im Manifest — AGP will das Attribut nur noch hier).
+    packaging {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// --- libretro-Cores (libretro-Buildbot) zur Build-Zeit holen ---------------------
+// URLs vor Nutzung per `curl -I` verifiziert (HTTP 200). Jeder Core wird bei
+// assembleDebug heruntergeladen, entpackt und als assets/cores/*.so ins APK
+// gepackt; die App extrahiert ihn beim ersten Start nach filesDir/cores/.
+// Die .so liegen nur in core-download/ (gitignored) — Emulatoren nie ins Repo.
+//   DOSBox-Pure: GPL-2.0 (M1a, #4)
+//   ScummVM:     GPL-3.0+ (Adventures, #28)
+//   PrBoom:      GPL-2.0-oder-später (Doom-Engine, xr.shooter); prboom.wad ist im Core eingebaut
+//   ECWolf:      GPL-2.0-oder-später (libretro-Fassung mit dbopl statt MAME-OPL; ecwolf.pk3 eingebaut)
+//   TyrQuake:    GPL-2.0-oder-später (Quake-Engine, xr.shooter)
+//   (GPL-2.0-oder-später ist über GPL-3.0 mit dem Apache-2.0-OpenXR-Loader verträglich.)
+// flavors: in welche App-Varianten der Core gepackt wird.
+def libretroCores = [
+    [task: 'fetchDosboxPureCore', name: 'DOSBox-Pure', so: 'dosbox_pure_libretro_android.so',
+     flavors: ['shell', 'island', 'dos']],
+    [task: 'fetchScummvmCore',    name: 'ScummVM',     so: 'scummvm_libretro_android.so',
+     flavors: ['adventure']],
+    [task: 'fetchPrboomCore',     name: 'PrBoom',      so: 'prboom_libretro_android.so',
+     flavors: ['fps']],
+    [task: 'fetchEcwolfCore',     name: 'ECWolf',      so: 'ecwolf_libretro_android.so',
+     flavors: ['fps']],
+    [task: 'fetchTyrquakeCore',   name: 'TyrQuake',    so: 'tyrquake_libretro_android.so',
+     flavors: ['fps']],
+]
+def buildbotBase = 'https://buildbot.libretro.com/nightly/android/latest/arm64-v8a/'
+
+libretroCores.each { core ->
+    def coreUrl = buildbotBase + core.so + '.zip'
+    def coreZipFile = layout.buildDirectory.file('core-download/' + core.so + '.zip')
+    // Ein Asset-Verzeichnis pro Core, damit jede Variante nur ihre Cores bekommt.
+    def coreAssetRoot = 'core-download/' + core.so.replace('_libretro_android.so', '') + '/assets'
+    def coreAssetOut = layout.projectDirectory.file(coreAssetRoot + '/cores/' + core.so)
+    core.flavors.each { flavor -> android.sourceSets.getByName(flavor).assets.srcDir coreAssetRoot }
+    tasks.register(core.task) {
+        description = "Lädt ${core.name} (libretro, arm64-v8a) und legt ihn unter assets/cores/ ab"
+        inputs.property('coreUrl', coreUrl)
+        outputs.file(coreAssetOut)
+        doLast {
+            def out = coreAssetOut.asFile
+            out.parentFile.mkdirs()
+            def zip = coreZipFile.get().asFile
+            zip.parentFile.mkdirs()
+            zip.withOutputStream { os ->
+                new URL(coreUrl).withInputStream { is -> os << is }
+            }
+            def zf = new java.util.zip.ZipFile(zip)
+            def entry = zf.entries().toList().find { it.name.endsWith(core.so) }
+            if (entry == null) {
+                zf.close()
+                throw new GradleException("Core nicht im ZIP gefunden: ${core.so}")
+            }
+            out.withOutputStream { os -> os << zf.getInputStream(entry) }
+            zf.close()
+            logger.lifecycle("${core.name}-Core extrahiert → ${out}")
+        }
+    }
+    preBuild.dependsOn core.task
+}
+
+// --- ScummVM-Systemdateien (#28) -------------------------------------------------
+// Engine-Daten (extra/, z. B. sky.cpt für Beneath a Steel Sky) und GUI-Themes
+// (theme/) aus dem Buildbot-Paket ScummVM.zip (GPL, gehört zum Core, keine
+// Spieldaten). Ohne CJK-Fonts (38 MB) und GL-Shader (XRShell rendert nur in
+// Software). Die App entpackt sie nach filesDir/system/scummvm/.
+def scummvmSystemUrl = 'https://buildbot.libretro.com/assets/system/ScummVM.zip'
+def scummvmSystemRoot = 'core-download/scummvm-system/assets'
+android.sourceSets.getByName('adventure').assets.srcDir scummvmSystemRoot
+tasks.register('fetchScummvmSystem') {
+    description = 'Lädt die ScummVM-Systemdateien (extra/, theme/) nach assets/system/scummvm/'
+    inputs.property('url', scummvmSystemUrl)
+    outputs.dir(layout.projectDirectory.dir(scummvmSystemRoot))
+    doLast {
+        def outRoot = layout.projectDirectory.dir(scummvmSystemRoot).asFile
+        def zip = layout.buildDirectory.file('core-download/ScummVM.zip').get().asFile
+        zip.parentFile.mkdirs()
+        zip.withOutputStream { os -> new URL(scummvmSystemUrl).withInputStream { is -> os << is } }
+        project.delete(outRoot)
+        def zf = new java.util.zip.ZipFile(zip)
+        int count = 0
+        zf.entries().each { e ->
+            if (e.isDirectory()) return
+            // nur scummvm/extra/<datei> und scummvm/theme/<datei>, keine Unterordner
+            def m = (e.name =~ /^scummvm\/(extra|theme)\/([^\/]+)$/)
+            if (!m.matches() || m.group(2) == 'fonts-cjk.dat') return
+            def out = new File(outRoot, 'system/' + e.name)
+            out.parentFile.mkdirs()
+            out.withOutputStream { os -> os << zf.getInputStream(e) }
+            count++
+        }
+        zf.close()
+        if (count == 0) throw new GradleException('ScummVM.zip: keine Systemdateien gefunden')
+        logger.lifecycle("ScummVM-Systemdateien: ${count} Dateien → ${outRoot}")
+    }
+}
+tasks.matching { it.name == 'preAdventureDebugBuild' || it.name == 'preAdventureReleaseBuild' }
+    .configureEach { dependsOn 'fetchScummvmSystem' }
+
+// --- Quest-Startbild (Skill xr-loading-screen, L1) ------------------------------------
+// Horizon OS zeigt beim Start statt der drei Ladepunkte assets/vr_splash.png (Manifest:
+// com.oculus.ossplash). Je Flavor zur Build-Zeit erzeugt: App-Name xr.<name>, Version aus
+// version.properties und „Start dauert etwa N s“ — keine Spielgrafik (BYOA). Nur Java-AWT
+// (headless), keine Datei im Repo; Ziel build/generated/xrsplash/<flavor>/assets/.
+// Startdauer N: App-Start bis Ladeanzeige/Menü ≈ 1–2 s, dazu der übliche erste Spielstart.
+def splashSeconds = [shell: 4, island: 8, adventure: 4, dos: 5, fps: 3]
+def splashLabels = [shell: 'xr.shell', island: 'xr.island',
+                    adventure: 'xr.adventure', dos: 'xr.dosgames', fps: 'xr.shooter']
+def splashTagline = [shell: 'XRShell · libretro',
+                     island: 'Aufbauspiel · Windows 3.1', adventure: 'Adventures · ScummVM',
+                     dos: 'DOS-Spiele · DOSBox Pure', fps: 'Shooter · Doom, Wolfenstein, Quake']
+splashLabels.each { flavor, label ->
+    def outRoot = layout.buildDirectory.dir("generated/xrsplash/${flavor}/assets")
+    android.sourceSets.getByName(flavor).assets.srcDir outRoot
+    def version = appVersion(flavor).name
+    def seconds = splashSeconds[flavor]
+    def tagline = splashTagline[flavor]
+    def task = tasks.register("generateSplash${flavor.capitalize()}") {
+        description = "Erzeugt assets/vr_splash.png (Quest-Startbild) für ${label}"
+        inputs.property('label', label)
+        inputs.property('version', version)
+        inputs.property('seconds', seconds)
+        inputs.property('tagline', tagline)
+        inputs.property('layout', 2)   // bei Änderungen am Bildaufbau hochzählen
+        outputs.dir(outRoot)
+        doLast {
+            System.setProperty('java.awt.headless', 'true')
+            int w = 1280, h = 800
+            def img = new java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_RGB)
+            def g = img.createGraphics()
+            g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON)
+            g.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING,
+                               java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+            g.setPaint(new java.awt.GradientPaint(0f, 0f, new java.awt.Color(27, 30, 42), 0f, (float) h,
+                                                  new java.awt.Color(12, 13, 19)))
+            g.fillRect(0, 0, w, h)
+            def accent = new java.awt.Color(255, 146, 38)
+            def centered = { String text, java.awt.Font font, java.awt.Color color, int y ->
+                g.setFont(font)
+                g.setColor(color)
+                def fm = g.getFontMetrics()
+                g.drawString(text, (int) ((w - fm.stringWidth(text)) / 2), y)
+            }
+            centered(label, new java.awt.Font('SansSerif', java.awt.Font.BOLD, 120), accent, 340)
+            g.setColor(accent)
+            g.fillRect(340, 384, 600, 4)
+            centered("Version ${version}", new java.awt.Font('SansSerif', java.awt.Font.PLAIN, 52),
+                     new java.awt.Color(240, 240, 244), 470)
+            centered("Start dauert etwa ${seconds} s", new java.awt.Font('SansSerif', java.awt.Font.PLAIN, 44),
+                     new java.awt.Color(170, 174, 186), 550)
+            centered(tagline, new java.awt.Font('SansSerif', java.awt.Font.PLAIN, 32),
+                     new java.awt.Color(120, 124, 136), 700)
+            g.dispose()
+            def out = new File(outRoot.get().asFile, 'vr_splash.png')
+            out.parentFile.mkdirs()
+            javax.imageio.ImageIO.write(img, 'png', out)
+            logger.lifecycle("Startbild ${label} ${version} → ${out} (${out.length()} Bytes)")
+        }
+    }
+    preBuild.dependsOn task
+}
+
+// keine Java-Dependencies nötig — reine native_app_glue-App (hasCode=false)
+dependencies {
+}

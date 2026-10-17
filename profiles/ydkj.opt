@@ -1,0 +1,12 @@
+# Quiz-Reihe (Windows 3.1 in DOSBox-Pure, xr.dosgames) — als xrshell.opt in den Spielordner.
+# Windows 3.1 wie XR-HolidayIsland: S3 Trio 640×480×256, VMware-Maus, SB16 220/7 + MPU-401.
+# Laser setzt den Windows-Cursor absolut (vmwmouse.drv).
+dosbox_pure_mouse_input = direct
+# Windows ist deutsch eingerichtet (kbdgr.dll): gleiche Belegung → Bildschirmtastatur QWERTZ,
+# Y/Z beim Namen stimmen. Q, Ziffern, Leertaste und Enter liegen in beiden Belegungen gleich.
+dosbox_pure_keyboard_layout = gr
+dosbox_pure_auto_mapping = false
+dosbox_pure_memory_size = 16
+# Windows-Treiber sndblst2.drv: Port 220, IRQ 7 (SYSTEM.INI [sndblst.drv]).
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5

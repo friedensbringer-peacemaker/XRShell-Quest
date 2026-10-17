@@ -1,0 +1,37 @@
+# Quake (DOS, 1.06, quake.exe) - als DOS.YML in den Spielordner (Laufwerk C:) legen. DOSBox Pure nimmt die
+# input_pad_*-Zeilen als Gamepad-Belegung von Port 0 (ersetzt die eingebaute Keyb2Joypad-
+# Belegung). Gilt im Pad-Modus (xrshell_input = pad). Vorbereitet, ungeprueft.
+# RetroPad-Namen (libretro) -> Quest-Controller in XRShell (xrshell_input = pad,
+# padmap::kDosPad in src/pad_mapping.cpp):
+#   r = Trigger rechts   l2 = Griff rechts   y = A   b = B   x = X   start = Y
+#   l = Trigger links    r3 = rechten Stick druecken
+#   l3 = linken Stick druecken: bleibt frei = DOSBox-Pure-Menue/Bildschirmtastatur
+#   Steuerkreuz (up/down/left/right) sendet XRShell im Pad-Modus nicht - nicht belegen.
+# Tasten = Standardbelegung des Spiels (CONFIG.CFG: Strg, Leertaste, Shift, Komma/Punkt, Bild ab/Entf, Ende, /, 1-8, Tab); Maus im Spiel aus lassen.
+
+input_pad_lstick_up: up Vorwaerts
+input_pad_lstick_down: down Rueckwaerts
+input_pad_lstick_left: comma Seitwaerts links
+input_pad_lstick_right: period Seitwaerts rechts
+input_pad_rstick_left: left Drehen links
+input_pad_rstick_right: right Drehen rechts
+input_pad_rstick_up: pagedown Hochsehen
+input_pad_rstick_down: delete Runtersehen
+input_pad_r: leftctrl Feuern
+input_pad_l2: leftshift Rennen
+input_pad_y: enter Menue OK
+input_pad_b: wheel Waffenrad
+input_pad_x: tab Punktestand
+input_pad_start: esc Menue
+input_pad_l: space Springen / Schwimmen
+input_pad_r3: slash Naechste Waffe
+input_wheel_1: 1 Axt
+input_wheel_2: 2 Schrotflinte
+input_wheel_3: 3 Doppelflinte
+input_wheel_4: 4 Nagelgewehr
+input_wheel_5: 5 Super-Nagelgewehr
+input_wheel_6: 6 Granatwerfer
+input_wheel_7: 7 Raketenwerfer
+input_wheel_8: 8 Blitzgewehr
+input_wheel_9: end Blick zentrieren
+input_wheel_10: y Ja (Abfragen)

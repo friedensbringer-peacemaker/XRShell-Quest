@@ -1,0 +1,19 @@
+# Hexen (DOS, 1.1) - als xrshell.opt in den Spielordner legen (von Hand; prepare-dos-games.ps1
+# hat dafuer keinen Zweig). Vorbereitet, ungeprueft gegen echte Installer und im Headset.
+# Kaufversion/Dateien/Start: docs/DOS-SPIELE.md, Abschnitt "Shooter".
+#
+# Pad-Modus: RetroPad mit Analogsticks an Port 0, kein Laser-Mauszeiger. Belegung aus
+# C:\DOS.YML (profiles/hexen.yml), sonst die eingebaute Keyb2Joypad-Belegung von DOSBox Pure.
+xrshell_input = pad
+dosbox_pure_auto_mapping = true
+dosbox_pure_cycles = max
+# Hexen braucht mehr Speicher als Doom.
+dosbox_pure_memory_size = 32
+# Soundblaster 16 wie die anderen Profile (220h, IRQ 7, DMA 1, HDMA 5); HEXEN.CFG im Spielordner
+# (SETUP.EXE): snd_sfxdevice 3, snd_musicdevice 3 (OPL); CD-Musik nur mit CD-Image auf C:.
+
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5
+# Bild: Scharf statt HD (xBR). xBR glaettet Pixel-Art-Kanten und verschmiert die perspektivischen
+# Wand-/Bodentexturen eines 3D-Shooters zu Klecksen; im VR-Menue pro Spiel aenderbar.
+xrshell_filter = scharf

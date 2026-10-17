@@ -1,0 +1,17 @@
+# Populous (DOS/GOG) — als xrshell.opt in den Spielordner legen.
+# GOG: cycles=7500 fest (core=dynamic; das Spiel läuft sonst zu schnell). DOSBox-Pure nimmt nur
+# seine Stufen (315/1320/2750/4720/7800/13400/26800/…): 7800 = 386DX/33 liegt 4 % darüber,
+# 4720 wäre 37 % zu langsam. Einen Tempo-Regler nennt das Handbuch nicht („Rate“ = Bevölkerungswachstum).
+dosbox_pure_cycles = 7800
+# Musik: GOG startet „populous Vga Roland MT-32“ → MPU-401; DOSBox-Pure spielt sie mit
+# C:\DOSBOX.SF2 (General-MIDI-Soundfont, legt prepare-dos-games.ps1 dazu).
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5
+# Maus „direct“: Spielzeiger absolut unter dem Laser (DOSBox-Pure setzt die INT-33-Position aus
+# dem Laserpunkt). Rückfall, falls das Spiel die Position ignoriert (Zeiger klebt/springt):
+#   dosbox_pure_mouse_input = virtual   und ggf.   dosbox_pure_mouse_speed_factor = 1.5
+dosbox_pure_mouse_input = direct
+# Bild: HD-Filter (xBR-Kantenglättung) als Standard, bis im VR-Menü ein anderer gewählt wird.
+xrshell_filter = hd
+# Rechter Griff halten + Hand bewegen = Karte ziehen (Ziffernblock 4/6/8/2 aus xrshell.keys, im Headset prüfen, VR-Menü → Steuerung).
+xrshell_grip_right = drag

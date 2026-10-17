@@ -1,0 +1,18 @@
+# Pirates! Gold (DOS/GOG-CD) — als xrshell.opt in den Spielordner legen.
+# Soundblaster 16 wie in GOGs DOSBox-Konfiguration (220h, IRQ 7, DMA 1, HDMA 5);
+# PIRATESG.CD/CONFIG.PIR und PIRATESC/CONFIG.PIR (GOG) stehen schon darauf.
+dosbox_pure_sblaster_type = sb16
+dosbox_pure_sblaster_conf = A220 I7 D1 H5
+# GOG: memsize=30 (X32-Extender); DOSBox-Pure-Standard sind 16 MB.
+dosbox_pure_memory_size = 32
+# Pirates! Gold läuft in VESA 640×480: dort führt DOSBox-Pure den Mausbereich nicht nach
+# (Headset 2026-10-03: Spielzeiger weit neben dem Laser).
+# Maus „virtual“ (relativ): „direct“ setzt die INT-33-Position als Laser · max_x/max_y, und in
+# VESA-Modi (> 13h) führt DOSBox-Pure max_x/max_y nicht nach. XRShell fängt den Zeiger beim
+# Schließen des VR-Menüs und wenn der Laser aufs Bild kommt; Faktor pro Achse im VR-Menü → DOS
+# („Maus waagerecht/senkrecht“, „Abgleichen“), gespeichert pro Spiel.
+dosbox_pure_mouse_input = virtual
+# Bild: HD-Filter (xBR-Kantenglättung) als Standard, bis im VR-Menü ein anderer gewählt wird.
+xrshell_filter = hd
+# Rechter Griff = rechte Maustaste wie bisher (Fechten: Stoß); keine Karte zum Ziehen.
+xrshell_grip_right = rightclick

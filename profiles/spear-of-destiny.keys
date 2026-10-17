@@ -1,0 +1,12 @@
+# Spear of Destiny (DOS, 1.4) - Rueckfall fuer den Maus-Modus (ohne xrshell_input = pad), als xrshell.keys
+# in den Spielordner legen. Im Pad-Modus gilt DOS.YML (profiles/spear-of-destiny.yml).
+# Maus-Modus: rechter Stick = Pfeiltasten (vor/zurueck/drehen), Trigger/B = Maustasten.
+# Y bleibt Bildschirmtastatur (fuer "Y" in Abfragen und seltene Tasten).
+
+left_stick_up     = UP        # vorwaerts
+left_stick_down   = DOWN      # rueckwaerts
+left_stick_left   = LALT+LEFT # seitwaerts links
+left_stick_right  = LALT+RIGHT # seitwaerts rechts
+left_trigger = LCTRL          # feuern
+a = SPACE+ENTER               # benutzen / Menue OK
+right_stick_click = ESC       # Menue

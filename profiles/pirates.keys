@@ -1,0 +1,15 @@
+# Pirates! (MicroProse 1987, DOS/GOG, EGA) — als xrshell.keys in den Spielordner legen.
+# Steuerung über Tastatur (Startfrage „1) JOYSTICK 2) KEYBOARD“, STUFFIT in XRSTART.BAT
+# antwortet 2). Richtung = Pfeiltasten (linker oder rechter Stick; Handbuch S. 5 „keyboard
+# cursor keys“). Feuerknopf = ENTER: das Spiel zeigt im Tastaturmodus „Press ENTER“ statt
+# „Press TRIGGER“ (Textpaar TRIGGER/ENTER in DISKP). Feuer liegt auf A (rechte Hand, mit
+# rechtem Stick) und auf Trigger links (linke Hand, mit linkem Stick – Fechten: Richtung + Feuer).
+# X (Bildzoom) und Y (Bildschirmtastatur, z. B. für den Kapitänsnamen) bleiben frei.
+
+left_stick_left   = LEFT     # links / Schiff links drehen
+left_stick_right  = RIGHT    # rechts
+left_stick_up     = UP       # hoch / Segel setzen
+left_stick_down   = DOWN     # runter / Segel reffen
+a = ENTER                    # Feuerknopf: auswählen, bestätigen
+left_trigger = ENTER         # Feuerknopf für die linke Hand (Richtung links + Feuer)
+right_stick_click = ESC      # zurück

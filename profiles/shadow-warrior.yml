@@ -1,0 +1,40 @@
+# Shadow Warrior Classic (DOS, 1.2) - als DOS.YML in den Spielordner (Laufwerk C:) legen. DOSBox Pure nimmt die
+# input_pad_*-Zeilen als Gamepad-Belegung von Port 0 (ersetzt die eingebaute Keyb2Joypad-
+# Belegung). Gilt im Pad-Modus (xrshell_input = pad). Vorbereitet, ungeprueft.
+# RetroPad-Namen (libretro) -> Quest-Controller in XRShell (xrshell_input = pad,
+# padmap::kDosPad in src/pad_mapping.cpp):
+#   r = Trigger rechts   l2 = Griff rechts   y = A   b = B   x = X   start = Y
+#   l = Trigger links    r3 = rechten Stick druecken
+#   l3 = linken Stick druecken: bleibt frei = DOSBox-Pure-Menue/Bildschirmtastatur
+#   Steuerkreuz (up/down/left/right) sendet XRShell im Pad-Modus nicht - nicht belegen.
+# Tasten = Standardbelegung des Spiels (SW.CFG: Strg, Leertaste, Shift, A, Z, Komma/Punkt, Tab, Enter, [ ], '); Maus im Spiel aus lassen.
+
+input_pad_lstick_up: up Vorwaerts
+input_pad_lstick_down: down Rueckwaerts
+input_pad_lstick_left: comma Seitwaerts links
+input_pad_lstick_right: period Seitwaerts rechts
+input_pad_rstick_left: left Drehen links
+input_pad_rstick_right: right Drehen rechts
+input_pad_rstick_down: z Ducken
+input_pad_r: leftctrl Feuern
+input_pad_l2: leftshift Rennen
+input_pad_y: space Oeffnen / Menue OK
+input_pad_b: wheel Waffen- und Inventarrad
+input_pad_x: tab Karte
+input_pad_start: esc Menue
+input_pad_l: a Springen
+input_pad_r3: quote Naechste Waffe
+input_wheel_1: 1 Faeuste / Katana
+input_wheel_2: 2 Shuriken
+input_wheel_3: 3 Riot Gun
+input_wheel_4: 4 Uzi
+input_wheel_5: 5 Raketenwerfer
+input_wheel_6: 6 Granatwerfer
+input_wheel_7: 7 Haftminen
+input_wheel_8: 8 Railgun
+input_wheel_9: 9 Guardian Head
+input_wheel_10: 0 Ripper Heart
+input_wheel_11: enter Inventar benutzen
+input_wheel_12: leftbracket Inventar links
+input_wheel_13: rightbracket Inventar rechts
+input_wheel_14: y Ja (Abfragen)
